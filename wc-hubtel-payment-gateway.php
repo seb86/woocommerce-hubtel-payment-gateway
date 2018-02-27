@@ -28,7 +28,7 @@ if ( ! class_exists( 'WC_Hubtel_Payment_Gateway' ) ) {
 		 *
 		 * @access protected
 		 * @static
-		 * @since 1.0.0
+		 * @since  1.0.0
 		 */
 		protected static $_instance = null;
 
@@ -94,8 +94,8 @@ if ( ! class_exists( 'WC_Hubtel_Payment_Gateway' ) ) {
 		 * @since  1.0.0
 		 */
 		public function __construct() {
-			// Checks for WooCommerce dependency.
-			add_action( 'plugins_loaded', array( $this, 'check_woocommerce_dependency' ) );
+			// Checks the WooCommerce enviroment.
+			add_action( 'plugins_loaded', array( $this, 'check_enviroment' ) );
 
 			// Load translation files.
 			add_action( 'init', array( $this, 'load_plugin_textdomain' ) );
@@ -120,18 +120,22 @@ if ( ! class_exists( 'WC_Hubtel_Payment_Gateway' ) ) {
 		} // END plugin_path()
 
 		/**
-		 * Check WooCommerce dependency on activation.
+		 * Check WooCommerce enviroment before activation.
 		 *
 		 * @access public
 		 * @since  1.0.0
 		 */
-		public function check_woocommerce_dependency() {
+		public function check_enviroment() {
 			// Check we're running the required version of WooCommerce.
 			if ( ! defined( 'WC_VERSION' ) || version_compare( WC_VERSION, $this->required_woo, '<' ) ) {
 				add_action( 'admin_notices', array( $this, 'admin_notice' ) );
 				return false;
 			}
-		} // END check_woocommerce_dependency()
+
+			if ( ! defined( 'IFRAME_REQUEST' ) && ( self::$version !== get_option( 'wc_hubtel_version' ) ) ) {
+				$this->install();
+			}
+		} // END check_enviroment()
 
 		/**
 		 * Display a warning message if minimum version of WooCommerce check fails.
@@ -163,27 +167,6 @@ if ( ! class_exists( 'WC_Hubtel_Payment_Gateway' ) ) {
 			load_plugin_textdomain( 'wc-hubtel-payment-gateway', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 		} // END load_plugin_textdomain()
 
-		/**
-		 * Show row meta on the plugin screen.
-		 *
-		 * @access public
-		 * @static
-		 * @param  mixed $links
-		 * @param  mixed $file
-		 * @return array
-		 */
-		public static function plugin_row_meta( $links, $file ) {
-			if ( $file == plugin_basename( __FILE__ ) ) {
-				$row_meta = array(
-					'docs'    => '<a href="https://github.com/seb86/woocommerce-hubtel-payment-gateway/wiki/" target="_blank">' . __( 'Documentation', 'wc-hubtel-payment-gateway' ) . '</a>',
-				);
-
-				$links = array_merge( $links, $row_meta );
-			}
-
-			return $links;
-		} // END plugin_row_meta()
-
 		/*-----------------------------------------------------------------------------------*/
 		/*  Load Files                                                                       */
 		/*-----------------------------------------------------------------------------------*/
@@ -197,7 +180,89 @@ if ( ! class_exists( 'WC_Hubtel_Payment_Gateway' ) ) {
 		 */
 		public function includes() {
 			include_once( $this->plugin_path() .'/includes/class-wc-gateway-hubtel.php' );
+
+			add_filter( 'woocommerce_payment_gateways', array( $this, 'add_gateways' ) );
+			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ) );
 		} // END include()
+
+		/**
+		 * Updates the plugin version in database.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 */
+		public function update_plugin_version() {
+			delete_option( 'wc_hubtel_version' );
+			update_option( 'wc_hubtel_version', self::$version );
+		} // END update_plugin_version()
+
+		/**
+		 * Handles upgrade routines.
+		 *
+		 * @access public
+		 * @static
+		 * @since  1.0.0
+		 */
+		public static function install() {
+			if ( ! defined( 'WC_HUBTEL_INSTALLING' ) ) {
+				define( 'WC_HUBTEL_INSTALLING', true );
+			}
+
+			$this->update_plugin_version();
+		} // END install()
+
+		/**
+		 * Adds plugin action links.
+		 *
+		 * @access public
+		 * @static
+		 * @since  1.0.0
+		 * @param  array $links
+		 * @return array $links
+		 */
+		public static function plugin_action_links( $links ) {
+			$plugin_links = array(
+				'<a href="admin.php?page=wc-settings&tab=checkout&section=hubtel">' . esc_html__( 'Settings', 'wc-hubtel-payment-gateway' ) . '</a>',
+			);
+
+			return array_merge( $plugin_links, $links );
+		} // END plugin_action_links()
+
+		/**
+		 * Show row meta on the plugin screen.
+		 *
+		 * @access public
+		 * @static
+		 * @since  1.0.0
+		 * @param  mixed $links
+		 * @param  mixed $file
+		 * @return array $links
+		 */
+		public static function plugin_row_meta( $links, $file ) {
+			if ( $file == plugin_basename( __FILE__ ) ) {
+				$row_meta = array(
+					'docs'    => '<a href="https://github.com/seb86/woocommerce-hubtel-payment-gateway/wiki/" target="_blank">' . __( 'Documentation', 'wc-hubtel-payment-gateway' ) . '</a>',
+				);
+
+				$links = array_merge( $links, $row_meta );
+			}
+
+			return $links;
+		} // END plugin_row_meta()
+
+		/**
+		 * Add the gateway to WooCommerce.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 * @param  array $methods
+		 * @return array $methods
+		 */
+		public function add_gateways( $methods ) {
+			$methods[] = 'WC_Gateway_Hubtel';
+
+			return $methods;
+		} // END add_gateways()
 
 	} // END class
 
