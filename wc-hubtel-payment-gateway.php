@@ -158,7 +158,7 @@ if ( ! class_exists( 'WC_Hubtel_Payment_Gateway' ) ) {
 		 * @since  1.0.0
 		 * @return void
 		 */
-		public function load_plugin_textdomain()() {
+		public function load_plugin_textdomain() {
 			// Load text domain.
 			load_plugin_textdomain( 'wc-hubtel-payment-gateway', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 		} // END load_plugin_textdomain()
