@@ -59,9 +59,9 @@ class WC_Gateway_Hubtel_API_Handler {
 		// Add Order Items
 		foreach ( $order_items as $item_id => $item ) {
 			$invoice['items']['item_' . $item_id] = array(
-				'name' => $item->get_name(),
-				'quantity' => $item->get_quantity(),
-				'unit_price' => $order->get_item_total( $item, false, true ),
+				'name'        => $item->get_name(),
+				'quantity'    => $item->get_quantity(),
+				'unit_price'  => $order->get_item_total( $item, false, true ),
 				'total_price' => $item->get_total(),
 				'description' => $item->get_name()
 			);
