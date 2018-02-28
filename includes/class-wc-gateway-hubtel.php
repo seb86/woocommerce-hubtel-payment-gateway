@@ -107,8 +107,6 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 		self::$log_enabled    = $this->debug;
 
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
-		//add_action( 'woocommerce_order_status_on-hold_to_processing', array( $this, 'capture_payment' ) );
-		//add_action( 'woocommerce_order_status_on-hold_to_completed', array( $this, 'capture_payment' ) );
 
 		if ( ! $this->is_valid_for_use() ) {
 			$this->enabled = 'no';
@@ -339,42 +337,6 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 		$order->add_order_note( sprintf( __( 'Refunded %1$s - Refund ID: %2$s', 'wc-hubtel-payment-gateway' ), $result->GROSSREFUNDAMT, $result->REFUNDTRANSACTIONID ) );
 
 		return isset( $result->L_LONGMESSAGE0 ) ? new WP_Error( 'error', $result->L_LONGMESSAGE0 ) : false;
-	} // END process_refund()
-
-	/**
-	 * Capture payment when the order is changed from on-hold to complete or processing
-	 *
-	 * @access public
-	 * @param  int $order_id
-	 */
-	public function capture_payment( $order_id ) {
-		$order = wc_get_order( $order_id );
-
-		if ( 'hubtel' === $order->get_payment_method() && 'pending' === get_post_meta( $order->get_id(), '_hubtel_status', true ) && $order->get_transaction_id() ) {
-			$this->init_api();
-			$result = WC_Gateway_Hubtel_API_Handler::do_capture( $order );
-
-			if ( is_wp_error( $result ) ) {
-				$this->log( 'Capture Failed: ' . $result->get_error_message(), 'error' );
-				$order->add_order_note( sprintf( __( 'Payment could not captured: %s', 'wc-hubtel-payment-gateway' ), $result->get_error_message() ) );
-				return;
-			}
-
-			$this->log( 'Capture Result: ' . wc_print_r( $result, true ) );
-
-			if ( ! empty( $result->PAYMENTSTATUS ) ) {
-				switch ( $result->PAYMENTSTATUS ) {
-					case 'Completed' :
-						$order->add_order_note( sprintf( __( 'Payment of %1$s was captured - Auth ID: %2$s, Transaction ID: %3$s', 'wc-hubtel-payment-gateway' ), $result->AMT, $result->AUTHORIZATIONID, $result->TRANSACTIONID ) );
-						update_post_meta( $order->get_id(), '_hubtel_status', $result->PAYMENTSTATUS );
-						update_post_meta( $order->get_id(), '_checkout_id', $result->TRANSACTIONID );
-					break;
-					default :
-						$order->add_order_note( sprintf( __( 'Payment could not captured - Auth ID: %1$s, Status: %2$s', 'wc-hubtel-payment-gateway' ), $result->AUTHORIZATIONID, $result->PAYMENTSTATUS ) );
-					break;
-				}
-			}
-		}
-	} // END capture_payment()
+	} // END process_refund()*/
 
 } // END class
