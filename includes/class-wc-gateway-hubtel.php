@@ -70,8 +70,12 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 	 */
 	public $website_url;
 
+	/**
+	 * @access public
 	 * @var WC_Gateway_Hubtel_API_Handler
 	 */
+	public $hubtel_handler;
+
 	/**
 	 * Constructor for the gateway.
 	 *
