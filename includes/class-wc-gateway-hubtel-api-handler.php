@@ -133,7 +133,7 @@ class WC_Gateway_Hubtel_API_Handler {
 			)
 		);
 
-		// Log error if response failed.
+		// Log $error_returned if response failed.
 		if ( is_wp_error( $response ) || empty( $response['body'] ) ) {
 			WC_Gateway_Hubtel::log( 'Error Response: ' . wc_print_r( $response, true ) );
 
@@ -149,21 +149,26 @@ class WC_Gateway_Hubtel_API_Handler {
 
 			$error_returned = false;
 
+			// Find response code and text.
 			if ( isset( $parsed_response->ResponseCode ) || isset( $parsed_response->response_code ) ) {
 				if ( empty( $parsed_response->ResponseCode ) ) {
-					$error_code    = $parsed_response->response_code;
-					$error_message = $parsed_response->response_text;
-					$error_returned = true;
+					$response_code = $parsed_response->response_code;
+					$response_text = $parsed_response->response_text;
 				}
 
 				if ( empty( $parsed_response->response_code ) ) {
-					$error_code    = $parsed_response->ResponseCode;
-					$error_message = $parsed_response->Message;
-					$error_returned = true;
+					$response_code = $parsed_response->ResponseCode;
+					$response_text = $parsed_response->Message;
 				}
 
-				WC_Gateway_Hubtel::log( 'Hubtel Response Code: ' . $error_code );
-				WC_Gateway_Hubtel::log( 'Hubtel Response Message: ' . $error_message );
+				// Log Hubtel response.
+				WC_Gateway_Hubtel::log( 'Hubtel Response Code: ' . $response_code );
+				WC_Gateway_Hubtel::log( 'Hubtel Response Message: ' . $response_text );
+
+				// If invoice was not created.
+				if ( $response_code !== '00' ) {
+					$error_returned = true;
+				}
 			}
 
 			// Redirect if failed.
@@ -172,6 +177,12 @@ class WC_Gateway_Hubtel_API_Handler {
 
 				wp_safe_redirect( $order_pay_url );
 			} else {
+				// Get Token
+				$token = $parsed_response->token;
+
+				if ( empty( $token ) ) {
+					WC_Gateway_Hubtel::log( 'Token is missing!' );
+				}
 
 				// Return response if all is good.
 				$return_response = array(
