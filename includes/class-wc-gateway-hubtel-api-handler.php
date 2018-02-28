@@ -147,25 +147,33 @@ class WC_Gateway_Hubtel_API_Handler {
 				WC_Gateway_Hubtel::log( 'Returned Response: ' . wc_print_r( $parsed_response, true ) );
 			}
 
-			if ( isset( $parsed_response->ResponseCode ) || isset( $response->response_code ) ) {
+			$error_returned = false;
+
+			if ( isset( $parsed_response->ResponseCode ) || isset( $parsed_response->response_code ) ) {
 				if ( empty( $parsed_response->ResponseCode ) ) {
-					$error_code    = $response->response_code;
-					$error_message = $response->response_text;
+					$error_code    = $parsed_response->response_code;
+					$error_message = $parsed_response->response_text;
+					$error_returned = true;
 				}
 
-				if ( empty( $response->response_code ) ) {
+				if ( empty( $parsed_response->response_code ) ) {
 					$error_code    = $parsed_response->ResponseCode;
 					$error_message = $parsed_response->Message;
+					$error_returned = true;
 				}
 
 				WC_Gateway_Hubtel::log( 'Hubtel Response Code: ' . $error_code );
 				WC_Gateway_Hubtel::log( 'Hubtel Response Message: ' . $error_message );
+			}
 
+			// Redirect if failed.
+			if ( $error_returned ) {
 				$order_pay_url = wc_get_endpoint_url( 'order-pay', '', wc_get_page_permalink( 'checkout' ) ) . '/' . $order_id . '/';
 
 				wp_safe_redirect( $order_pay_url );
 			} else {
 
+				// Return response if all is good.
 				$return_response = array(
 					'checkout_url' => $parsed_response->response_text,
 					'token'        => $parsed_response->token
