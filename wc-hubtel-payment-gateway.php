@@ -189,9 +189,10 @@ if ( ! class_exists( 'WC_Hubtel_Payment_Gateway' ) ) {
 		 * Updates the plugin version in database.
 		 *
 		 * @access public
+		 * @static
 		 * @since  1.0.0
 		 */
-		public function update_plugin_version() {
+		public static function update_plugin_version() {
 			delete_option( 'wc_hubtel_version' );
 			update_option( 'wc_hubtel_version', self::$version );
 		} // END update_plugin_version()
@@ -208,7 +209,7 @@ if ( ! class_exists( 'WC_Hubtel_Payment_Gateway' ) ) {
 				define( 'WC_HUBTEL_INSTALLING', true );
 			}
 
-			$this->update_plugin_version();
+			self::update_plugin_version();
 		} // END install()
 
 		/**
