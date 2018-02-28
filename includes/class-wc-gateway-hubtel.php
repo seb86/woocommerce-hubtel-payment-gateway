@@ -339,6 +339,12 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 	public function process_payment( $order_id ) {
 		$order = wc_get_order( $order_id );
 
+		// Check that the order had not failed.
+		if ( $order->has_status( array( 'failed' ) ) ) {
+			wc_add_notice( __( 'This order had previously failed and can not be paid for. If this is an error please report to site administrator.', 'wc-hubtel-payment-gateway' ), 'error' );
+			return;
+		}
+
 		if ( $order->get_total() > 0 ) {
 			$store = array(
 				'name'        => $this->store_name,
