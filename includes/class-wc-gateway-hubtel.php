@@ -112,7 +112,7 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 			$this->enabled = 'no';
 		} else {
 			if ( $this->client_id && $this->client_secret ) {
-				include_once( dirname( __FILE__ ) . '/includes/class-wc-gateway-hubtel-api-handler.php' );
+				include_once( 'class-wc-gateway-hubtel-api-handler.php' );
 				$hubtel_handler = new WC_Gateway_Hubtel_API_Handler( $this->client_id, $this->client_secret );
 			}
 		}
