@@ -60,7 +60,7 @@ class WC_Gateway_Hubtel_API_Handler {
 			'invoice' => array(
 				'items' => array(
 					'total_amount' => $order_total,
-					'description'  => sprintf( __( 'Total cost of %s items.', 'wc-hubtel-payment-gateway' ), count( $order_items ) )
+					'description'  => sprintf( __( 'Total cost of $1%s item(s) bought on $2%s.', 'wc-hubtel-payment-gateway' ), count( $order_items ), get_bloginfo('name') )
 ),
 				//'taxes' => array(),
 				'store' => $store,
