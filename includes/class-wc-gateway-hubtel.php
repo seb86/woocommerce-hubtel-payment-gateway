@@ -162,10 +162,13 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 	 * Get gateway icon.
 	 *
 	 * @access public
+	 * @static
 	 * @return string
 	 */
 	public function get_icon() {
-		$icon_html = '<img src="' . esc_attr( self::$logo_url ) . '" alt="' . esc_attr__( 'Hubtel acceptance mark', 'wc-hubtel-payment-gateway' ) . '" />';
+		$logo_url = WC_Hubtel_Payment_Gateway::plugin_url() . '/assets/images/hubtel.png';
+
+		$icon_html = '<img src="' . esc_attr( $logo_url ) . '" alt="' . esc_attr__( 'Hubtel acceptance mark', 'wc-hubtel-payment-gateway' ) . '" />';
 
 		return $icon_html;
 	} // END get_icon()
