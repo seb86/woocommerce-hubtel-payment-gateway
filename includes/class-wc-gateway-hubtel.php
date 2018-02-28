@@ -351,9 +351,6 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 		} else {
 			$order->payment_complete();
 
-			// Remove token if any.
-			delete_post_meta( $order_id, 'hubtel_order_token' );
-
 			// Remove cart.
 			WC()->cart->empty_cart();
 
