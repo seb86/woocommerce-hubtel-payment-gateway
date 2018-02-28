@@ -259,7 +259,7 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 				'title'       => __( 'Store Name', 'wc-hubtel-payment-gateway' ),
 				'type'        => 'text',
 				'description' => __( 'Your Store Name for the Invoice.', 'wc-hubtel-payment-gateway' ),
-				'default'     => get_option( 'blogname' ),
+				'default'     => get_bloginfo('name'),
 				'desc_tip'    => true,
 				'placeholder' => __( 'Required', 'wc-hubtel-payment-gateway' ),
 			),
@@ -291,9 +291,9 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 				'title'       => __( 'Website URL', 'wc-hubtel-payment-gateway' ),
 				'type'        => 'text',
 				'description' => __( 'Your Store Website URL for the Invoice.', 'wc-hubtel-payment-gateway' ),
-				'default'     => get_option( 'siteurl' ),
+				'default'     => get_site_url(),
 				'desc_tip'    => true,
-				'placeholder' => get_option( 'siteurl' ),
+				'placeholder' => get_site_url(),
 			),
 			'api_details' => array(
 				'title'       => __( 'API Credentials', 'wc-hubtel-payment-gateway' ),
@@ -328,7 +328,7 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 	 */
 	public function get_invoice_status( $order ) {
 		$token              = $order->get_transaction_id();
-		$get_invoice_status = 'https://api.hubtel.com/v1/merchantaccount/onlinecheckout/invoice/status/' . $token;
+		$get_invoice_status = $this->hubtel_handler->get_invoice_status( $token );
 
 		return $get_invoice_status;
 	} // END get_invoice_status()
@@ -377,7 +377,7 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 
 			$response = $this->hubtel_handler->checkout_invoice( $order_id, $invoice );
 
-			if ( isset( $response->checkout_url ) ) {
+			if ( ! empty( $response->checkout_url ) ) {
 				$this->log( 'Checkout Response: ' . wc_print_r( $response, true ) );
 
 				// Save the checkout token as transaction ID.
@@ -395,12 +395,10 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 					$this->log( 'Hubtel Checkout Failed: ' . wc_print_r( $response, true ) );
 				}
 
-				// Set order status as failed.
-				$order->update_status( 'failed' );
-
-				// Return result failed.
+				// Return failed result.
 				return array(
-					'result' => 'failed',
+					'result'   => 'fail',
+					'redirect' => ''
 				);
 			}
 		} else {

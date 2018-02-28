@@ -30,9 +30,15 @@ class WC_Gateway_Hubtel_API_Handler {
 
 	/**
 	 * @access protected
-	 * @var string API URL
+	 * @var string Invoice Create - API URL
 	 */
 	public static $api_url = 'https://api.hubtel.com/v1/merchantaccount/onlinecheckout/invoice/create';
+
+	/**
+	 * @access protected
+	 * @var string Invoice Status - API URL
+	 */
+	public static $invoice_url = 'https://api.hubtel.com/v1/merchantaccount/onlinecheckout/invoice/status';
 
 	/**
 	 * Constructor for the handler.
@@ -60,7 +66,7 @@ class WC_Gateway_Hubtel_API_Handler {
 			'invoice' => array(
 				'items' => array(
 					'total_amount' => $order_total,
-					'description'  => sprintf( __( 'Total cost of $1%s item(s) bought on $2%s.', 'wc-hubtel-payment-gateway' ), count( $order_items ), get_bloginfo('name') )
+					'description'  => sprintf( __( 'Total cost of %1$s item(s) bought on %2$s.', 'wc-hubtel-payment-gateway' ), count( $order_items ), get_bloginfo('name') )
 ),
 				//'taxes' => array(),
 				'store' => $store,
@@ -108,7 +114,7 @@ class WC_Gateway_Hubtel_API_Handler {
 	} // END get_headers()
 
 	/**
-	 * Checkout invoice
+	 * Checkout invoice.
 	 *
 	 * @access public
 	 * @static
@@ -123,17 +129,18 @@ class WC_Gateway_Hubtel_API_Handler {
 		// Encode invoice to JSON format.
 		$send_invoice = json_encode( $invoice, JSON_UNESCAPED_SLASHES );
 
-		$response = wp_safe_remote_post(
-			self::$api_url,
-			array(
-				'method'  => 'POST',
-				'headers' => $headers,
-				'body'    => apply_filters( 'woocommerce_hubtel_request_body', $send_invoice, self::$api_url ),
-				'timeout' => 70,
-			)
+		$post = array(
+			'method'  => 'POST',
+			'headers' => $headers,
+			'body'    => apply_filters( 'woocommerce_hubtel_request_body', $send_invoice ),
+			'timeout' => 70,
 		);
 
-		// Log $error_returned if response failed.
+		WC_Gateway_Hubtel::log( 'Data Posted: ' . wc_print_r( $post, true ) );
+
+		$response = wp_safe_remote_post( self::$api_url, $post );
+
+		// Log error returned if response failed.
 		if ( is_wp_error( $response ) || empty( $response['body'] ) ) {
 			WC_Gateway_Hubtel::log( 'Error Response: ' . wc_print_r( $response, true ) );
 
@@ -148,6 +155,8 @@ class WC_Gateway_Hubtel_API_Handler {
 			}
 
 			$error_returned = false;
+			$response_code  = null;
+			$response_text  = null;
 
 			// Find response code and text.
 			if ( isset( $parsed_response->ResponseCode ) || isset( $parsed_response->response_code ) ) {
@@ -173,9 +182,25 @@ class WC_Gateway_Hubtel_API_Handler {
 
 			// Redirect if failed.
 			if ( $error_returned ) {
-				$order_pay_url = wc_get_endpoint_url( 'order-pay', '', wc_get_page_permalink( 'checkout' ) ) . '/' . $order_id . '/';
+				$error_message = esc_html( $response_text );
 
-				wp_safe_redirect( $order_pay_url );
+				$query_vars = WC()->query->get_query_vars();
+				$endpoint   = ! empty( $query_vars[ 'order-pay' ] ) ? $query_vars[ 'order-pay' ] : '';
+
+				if ( ! empty( $endpoint ) ) {
+					$checkout_url = wc_get_endpoint_url( 'order-pay', '', wc_get_page_permalink( 'checkout' ) ) . '/' . $order_id . '/';
+				} else {
+					$checkout_url = wc_get_page_permalink( 'checkout' );
+				}
+
+				$error_params = array(
+					'hubtel_code'  => $response_code,
+					'hubtel_error' => str_replace( ' ', '%20', $error_message )
+				);
+
+				$redirect_url = add_query_arg( $error_params, esc_url( $checkout_url ) );
+
+				wp_safe_redirect( $redirect_url );
 			} else {
 				// Get Token
 				$token = $parsed_response->token;
