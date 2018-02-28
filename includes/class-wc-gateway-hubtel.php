@@ -373,7 +373,9 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 					'redirect' => esc_url_raw( $response->checkout_url ),
 				);
 			} else {
-				$this->log( 'Hubtel Checkout Failed: ' . wc_print_r( $response, true ) );
+				if ( ! empty( $response ) ) {
+					$this->log( 'Hubtel Checkout Failed: ' . wc_print_r( $response, true ) );
+				}
 
 				// Set order status as failed.
 				$order->update_status( 'failed' );
