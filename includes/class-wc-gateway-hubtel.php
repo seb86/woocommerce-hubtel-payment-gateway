@@ -36,45 +36,39 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 
 	/**
 	 * @access public
-	 * @static
 	 * @var string Hubtel Client ID
 	 */
-	public static $client_id;
+	public $client_id;
 
 	/**
 	 * @access public
-	 * @static
 	 * @var string Hubtel Client Secret
 	 */
-	public static $client_secret;
+	public $client_secret;
 
 	/**
 	 * @access public
-	 * @static
 	 * @var string Store Name
 	 */
-	public static $store_name;
+	public $store_name;
 
 	/**
 	 * @access public
-	 * @static
 	 * @var string Store Tagline
 	 */
-	public static $store_tagline;
+	public $store_tagline;
 
 	/**
 	 * @access public
-	 * @static
 	 * @var string Store Phone Number
 	 */
-	public static $store_phone;
+	public $store_phone;
 
 	/**
 	 * @access public
-	 * @static
 	 * @var string Website URL
 	 */
-	public static $website_url;
+	public $website_url;
 
 	/**
 	 * Constructor for the gateway.
