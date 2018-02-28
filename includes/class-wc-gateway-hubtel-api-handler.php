@@ -74,8 +74,8 @@ class WC_Gateway_Hubtel_API_Handler {
 		//$invoice['taxes'] = array();
 
 		$invoice['actions'] => array(
-			'cancel_url' => 'https://hubtel.com',
-			'return_url' => $order->get_return_url( $order )
+			'cancel_url' => $order->get_cancel_order_url_raw(),
+			'return_url' => $order->get_checkout_order_received_url()
 		);
 
 		$invoice = apply_filters( 'woocommerce_hubtel_gateway_invoice_request', $invoice );
