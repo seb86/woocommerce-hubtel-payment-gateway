@@ -118,9 +118,9 @@ class WC_Gateway_Hubtel_API_Handler {
 			$response_param = json_decode( $result );
 			$redirect_url = $response_param->response_text;
 
-			// Save the checkout token should it be required later.
+			// Save the checkout token as transaction ID.
 			$token = $response_param->token;
-			update_post_meta( $order_id, 'hubtel_order_token', $token );
+			$order->set_transaction_id( $token );
 
 			return $redirect_url;
 		}
