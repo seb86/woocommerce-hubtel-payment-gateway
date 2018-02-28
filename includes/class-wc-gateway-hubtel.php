@@ -232,21 +232,64 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 				/* translators: %s: URL */
 				'description' => sprintf( __( 'Log Hubtel events, such as payment requests, inside %s', 'wc-hubtel-payment-gateway' ), '<code>' . WC_Log_Handler_File::get_log_file_path( 'hubtel' ) . '</code>' ),
 			),
-			'image_url'             => array(
-				'title'       => __( 'Image url', 'wc-hubtel-payment-gateway' ),
-				'type'        => 'text',
-				'description' => __( 'Optionally enter the URL to a 150x50px image displayed as your logo in the upper left corner of the Hubtel checkout pages.', 'wc-hubtel-payment-gateway' ),
-				'default'     => '',
-				'desc_tip'    => true,
-				'placeholder' => __( 'Optional', 'wc-hubtel-payment-gateway' ),
+			'store_details' => array(
+				'title'       => __( 'Store Details', 'wc-hubtel-payment-gateway' ),
+				'type'        => 'title',
+				'description' => __( 'Enter your Hubtel Store information.', 'wc-hubtel-payment-gateway' ),
 			),
-			/*'instructions' => array(
-				'title'       => __( 'Instructions', 'wc-hubtel-payment-gateway' ),
-				'type'        => 'textarea',
-				'description' => __( 'Instructions that will be added to the thank you page and emails.', 'wc-hubtel-payment-gateway' ),
+			'store_name' => array(
+				'title'       => __( 'Store Name', 'wc-hubtel-payment-gateway' ),
+				'type'        => 'text',
+				'description' => __( 'Your Store Name for the Invoice.', 'wc-hubtel-payment-gateway' ),
+				'default'     => get_option( 'site_name' ),
+				'desc_tip'    => true,
+				'placeholder' => __( 'Required', 'wc-hubtel-payment-gateway' ),
+			),
+			'store_tagline' => array(
+				'title'       => __( 'Store Tagline', 'wc-hubtel-payment-gateway' ),
+				'type'        => 'text',
+				'description' => __( 'Your Store Tagline for the Invoice.', 'wc-hubtel-payment-gateway' ),
 				'default'     => '',
 				'desc_tip'    => true,
-			),*/
+				'placeholder' => __( 'Store Tagline', 'wc-hubtel-payment-gateway' ),
+			),
+			'store_phone' => array(
+				'title'       => __( 'Store Phone Number', 'wc-hubtel-payment-gateway' ),
+				'type'        => 'text',
+				'description' => __( 'Your Store Phone Number for the Invoice.', 'wc-hubtel-payment-gateway' ),
+				'default'     => '',
+				'desc_tip'    => true,
+				'placeholder' => __( 'Store Phone Number', 'wc-hubtel-payment-gateway' ),
+			),
+			'website_url' => array(
+				'title'       => __( 'Website URL', 'wc-hubtel-payment-gateway' ),
+				'type'        => 'text',
+				'description' => __( 'Your Store Website URL for the Invoice.', 'wc-hubtel-payment-gateway' ),
+				'default'     => get_option( 'site_url' ),
+				'desc_tip'    => true,
+				'placeholder' => __( 'Website URL', 'wc-hubtel-payment-gateway' ),
+			),
+			'api_details' => array(
+				'title'       => __( 'API Credentials', 'wc-hubtel-payment-gateway' ),
+				'type'        => 'title',
+				'description' => sprintf( __( 'Enter your Hubtel API credentials to process payments via Hubtel. You can access your API credentials via <a href="%s" target="_blank">Hubtel Applications</a>.', 'wc-hubtel-payment-gateway' ), 'https://unity.hubtel.com/account/api-accounts' ),
+			),
+			'client_id' => array(
+				'title'       => __( 'Client ID', 'wc-hubtel-payment-gateway' ),
+				'type'        => 'text',
+				'description' => __( 'Get your API credentials from Hubtel Applications.', 'wc-hubtel-payment-gateway' ),
+				'default'     => '',
+				'desc_tip'    => true,
+				'placeholder' => __( 'Required', 'wc-hubtel-payment-gateway' ),
+			),
+			'client_secret' => array(
+				'title'       => __( 'Client Secret', 'wc-hubtel-payment-gateway' ),
+				'type'        => 'password',
+				'description' => __( 'Get your API credentials from Hubtel Applications.', 'wc-hubtel-payment-gateway' ),
+				'default'     => '',
+				'desc_tip'    => true,
+				'placeholder' => __( 'Required', 'wc-hubtel-payment-gateway' ),
+			),
 		);
 	} // END init_form_fields()
 
