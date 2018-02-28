@@ -294,6 +294,33 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 	} // END init_form_fields()
 
 	/**
+	 * Get the invoice status.
+	 *
+	 * @access public
+	 * @param  WC_Order $order
+	 * @return string
+	 */
+	public function get_invoice_status( $order ) {
+		$token              = $order->get_transaction_id();
+		$get_invoice_status = 'https://api.hubtel.com/v1/merchantaccount/onlinecheckout/invoice/status/' . $token;
+
+		return $get_invoice_status;
+	} // END get_invoice_status()
+
+	/**
+	 * Get the transaction URL.
+	 *
+	 * @access public
+	 * @param  WC_Order $order
+	 * @return string
+	 */
+	public function get_transaction_url( $order ) {
+		$this->view_transaction_url = $hubtel_handler->get_checkout_url( $order );
+
+		return parent::get_transaction_url( $order );
+	} // END get_transaction_url()
+
+	/**
 	 * Create invoice and redirect to Hubtel to checkout and make payment.
 	 *
 	 * @access public
