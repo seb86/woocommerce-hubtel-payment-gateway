@@ -34,8 +34,47 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 	 */
 	public static $logger;
 
-	/** @var string */
-	public static $logout_url = '';
+	/**
+	 * @access public
+	 * @static
+	 * @var string Hubtel Client ID
+	 */
+	public static $client_id;
+
+	/**
+	 * @access public
+	 * @static
+	 * @var string Hubtel Client Secret
+	 */
+	public static $client_secret;
+
+	/**
+	 * @access public
+	 * @static
+	 * @var string Store Name
+	 */
+	public static $store_name;
+
+	/**
+	 * @access public
+	 * @static
+	 * @var string Store Tagline
+	 */
+	public static $store_tagline;
+
+	/**
+	 * @access public
+	 * @static
+	 * @var string Store Phone Number
+	 */
+	public static $store_phone;
+
+	/**
+	 * @access public
+	 * @static
+	 * @var string Website URL
+	 */
+	public static $website_url;
 
 	/**
 	 * Constructor for the gateway.
@@ -47,10 +86,10 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 		$this->has_fields         = false;
 		$this->order_button_text  = __( 'Proceed to Hubtel', 'wc-hubtel-payment-gateway' );
 		$this->method_title       = __( 'Hubtel', 'wc-hubtel-payment-gateway' );
-		$this->method_description = __( 'Hubtel sends customers to Hubtel to enter their payment information.', 'wc-hubtel-payment-gateway' );
+		$this->method_description = __( 'Hubtel sends customers to Hubtel Checkout to enter their payment information.', 'wc-hubtel-payment-gateway' );
 		$this->supports           = array(
 			'products',
-			'refunds',
+			//'refunds',
 		);
 
 		// Load the settings.
@@ -71,9 +110,6 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 		$this->store_phone    = $this->get_option( 'store_phone' );
 		$this->website_url    = $this->get_option( 'website_url' );
 
-		// Actions
-		$this->cancel_url     = $this->get_option( 'cancel_url', $this->website_url );
-
 		self::$log_enabled    = $this->debug;
 
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
@@ -84,8 +120,8 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 			$this->enabled = 'no';
 		} else {
 			if ( $this->client_id && $this->client_secret ) {
-				include_once( dirname( __FILE__ ) . '/includes/class-wc-gateway-hubtel-handler.php' );
-				new WC_Gateway_Hubtel_Handler( $this->client_id, $this->client_secret );
+				include_once( dirname( __FILE__ ) . '/includes/class-wc-gateway-hubtel-api-handler.php' );
+				$hubtel_handler = new WC_Gateway_Hubtel_API_Handler( $this->client_id, $this->client_secret );
 			}
 		}
 	}
@@ -227,19 +263,44 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 	 *
 	 * @access public
 	 * @param  int $order_id
-	 * @return array
+	 * @return array|void
 	 */
 	public function process_payment( $order_id ) {
-		include_once( dirname( __FILE__ ) . '/includes/class-wc-gateway-hubtel-request.php' );
-
 		$order = wc_get_order( $order_id );
 
-		$this->log( 'Invoice Created: ' . wc_print_r( $order ) );
+		if ( $order->get_total() > 0 ) {
+			$store = array(
+				'name'        => $this->store_name,
+				'tagline'     => $this->store_tagline,
+				'phone'       => $this->store_phone,
+				'website_url' => $this->website_url
+			);
 
-		return array(
-			'result'   => 'success',
-			'redirect' => WC_Gateway_Hubtel_API_Handler::get_checkout_url( $this->client_id, $this->client_secret, $order ),
-		);
+			$invoice = $hubtel_handler->create_invoice_request( $order, $store );
+
+			$this->log( 'Invoice Created: ' . wc_print_r( $invoice ) );
+
+			$response = $hubtel_handler->checkout_invoice( $order_id, $invoice );
+
+			return array(
+				'result'   => 'success',
+				'redirect' => esc_url_raw( $response ),
+			);
+		} else {
+			$order->payment_complete();
+
+			// Remove token if any.
+			delete_post_meta( $order_id, 'hubtel_order_token' );
+
+			// Remove cart.
+			WC()->cart->empty_cart();
+
+			// Return thank you page redirect.
+			return array(
+				'result'   => 'success',
+				'redirect' => $this->get_return_url( $order ),
+			);
+		}
 	} // END process_payment()
 
 	/**
