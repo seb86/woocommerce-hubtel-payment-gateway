@@ -92,45 +92,61 @@ class WC_Gateway_Hubtel_API_Handler {
 	} // END create_invoice_request()
 
 	/**
+	 * Generates the headers to pass to API.
+	 *
+	 * @access public
+	 * @static
+	 * @return array
+	 */
+	public static function get_headers() {
+		return apply_filters( 'woocommerce_hubtel_request_headers', array(
+			'Authorization' => 'Basic ' . base64_encode( self::$client_id . ':' . self::$client_secret ),
+			'Cache-Control' => 'no-cache',
+			'Content-Type'  => 'application/json',
+		) );
+	} // END get_headers()
+
+	/**
 	 * Checkout invoice
 	 *
 	 * @access public
 	 * @static
+	 * @param  int    $order_id
 	 * @param  array  $invoice - The invoice data.
-	 * @return string $redirect_url - URL to Hubtel Checkout.
+	 * @return string $return_response - URL to Hubtel Checkout and Token.
 	 */
 	public static function checkout_invoice( $order_id, $invoice = array() ) {
-		$basic_auth_key = 'Basic ' . base64_encode( $this->client_id . ':' . $this->client_secret );
+		// Get headers.
+		$headers = self::get_headers();
 
+		// Encode invoice to JSON format.
 		$send_invoice = json_encode( $invoice, JSON_UNESCAPED_SLASHES );
 
-		$ch =  curl_init( $this->api_url );
-		curl_setopt( $ch, CURLOPT_POST, true );
-		curl_setopt( $ch, CURLOPT_POSTFIELDS, $create_invoice );
-		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-		curl_setopt( $ch, CURLOPT_HTTPHEADER, array(
-			'Authorization: ' . $basic_auth_key,
-			'Cache-Control: no-cache',
-			'Content-Type: application/json',
-		) );
+		$response = wp_safe_remote_post(
+			self::$api_url,
+			array(
+				'method'  => 'POST',
+				'headers' => $headers,
+				'body'    => apply_filters( 'woocommerce_hubtel_request_body', $send_invoice, self::$api_url ),
+				'timeout' => 70,
+			)
+		);
 
-		$result = curl_exec( $ch );
-		$error  = curl_error( $ch );
-
-		curl_close( $ch );
-
-		if ( $error ) {
-			echo $error;
+		// Log error if response failed.
+		if ( is_wp_error( $response ) || empty( $response['body'] ) ) {
+			WC_Gateway_Hubtel::log( 'Error Response: ' . wc_print_r( $response, true ) );
 		} else {
-			// Redirect customer to Hubtel checkout.
-			$response_param = json_decode( $result );
-			$redirect_url = $response_param->response_text;
+			// Return response.
+			$response_param = json_decode( $response['body'] );
 
-			// Save the checkout token as transaction ID.
-			$token = $response_param->token;
-			$order->set_transaction_id( $token );
+			WC_Gateway_Hubtel::log( 'Returned Response: ' . wc_print_r( $response_param, true ) );
 
-			return $redirect_url;
+			$return_response = array(
+				'checkout_url' => $response_param->response_text,
+				'token'        => $response_param->token
+			);
+
+			return $return_response;
 		}
 	} // END checkout_invoice()
 

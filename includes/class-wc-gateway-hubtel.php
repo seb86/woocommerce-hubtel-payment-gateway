@@ -349,15 +349,21 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 
 			$invoice = $this->hubtel_handler->create_invoice_request( $order, $store );
 
-			$this->log( 'Invoice Created: ' . wc_print_r( $invoice ) );
+			$this->log( 'Invoice Created: ' . wc_print_r( $invoice, true ) );
 
 			$response = $this->hubtel_handler->checkout_invoice( $order_id, $invoice );
 
-			$this->log( 'Checkout Response: ' . wc_print_r( $response ) );
+			$this->log( 'Checkout Response: ' . wc_print_r( $response, true ) );
 
+			// Save the checkout token as transaction ID.
+			$token = $response->token;
+			$this->log( 'Checkout Token: ' . $token );
+			$order->set_transaction_id( $token );
+
+			// Redirect customer to Hubtel checkout.
 			return array(
 				'result'   => 'success',
-				'redirect' => esc_url_raw( $response ),
+				'redirect' => esc_url_raw( $response->checkout_url ),
 			);
 		} else {
 			$order->payment_complete();
