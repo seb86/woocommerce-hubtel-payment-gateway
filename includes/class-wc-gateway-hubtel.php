@@ -364,10 +364,11 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 
 		if ( $order->get_total() > 0 ) {
 			$store = array(
-				'name'        => $this->store_name,
-				'tagline'     => $this->store_tagline,
-				'phone'       => $this->store_phone,
-				'website_url' => $this->website_url
+				'name'           => $this->store_name,
+				'tagline'        => $this->store_tagline,
+				'postal_address' => $this->store_postal_address,
+				'phone'          => $this->store_phone,
+				'website_url'    => $this->website_url
 			);
 
 			$invoice = $this->hubtel_handler->create_invoice_request( $order, $store );
