@@ -100,6 +100,7 @@ class WC_Gateway_Hubtel_API_Handler {
 	 */
 	public static function get_headers() {
 		return apply_filters( 'woocommerce_hubtel_request_headers', array(
+			'User-Agent'    => 'WooCommerce Hubtel Checkout',
 			'Authorization' => 'Basic ' . base64_encode( self::$client_id . ':' . self::$client_secret ),
 			'Cache-Control' => 'no-cache',
 			'Content-Type'  => 'application/json',
