@@ -136,6 +136,8 @@ class WC_Gateway_Hubtel_API_Handler {
 		// Log error if response failed.
 		if ( is_wp_error( $response ) || empty( $response['body'] ) ) {
 			WC_Gateway_Hubtel::log( 'Error Response: ' . wc_print_r( $response, true ) );
+
+			return new WP_Error( sprintf( __( 'Error! - %s', 'wc-hubtel-payment-gateway' ), $response->get_error_message() ) );
 		} else {
 			// Return response.
 			$parsed_response = json_decode( $response['body'] );
@@ -143,12 +145,23 @@ class WC_Gateway_Hubtel_API_Handler {
 			WC_Gateway_Hubtel::log( 'Hubtel Response Code: ' . $parsed_response->ResponseCode );
 			WC_Gateway_Hubtel::log( 'Hubtel Response Message: ' . $parsed_response->Message );
 
-			$return_response = array(
-				'checkout_url' => $response_param->response_text,
-				'token'        => $response_param->token
-			);
+			// Check the response was good.
+			if ( 200 !== $response['response']['code'] && '4101' !== $parsed_response->ResponseCode ) {
+				WC_Gateway_Hubtel::log( 'Returned Response: ' . wc_print_r( $parsed_response, true ) );
 
-			return $return_response;
+				$return_response = array(
+					'checkout_url' => $parsed_response->response_text,
+					'token'        => $parsed_response->token
+				);
+
+				return $return_response;
+			} else {
+				WC_Gateway_Hubtel::log( __( 'Unable to redirect to Hubtel Checkout! See Hubtel response code and message for info.', 'wc-hubtel-payment-gateway' ) );
+
+				$order_pay_url = wc_get_endpoint_url( 'order-pay', '', wc_get_page_permalink( 'checkout' ) ) . '/' . $order_id . '/';
+
+				wp_safe_redirect( $order_pay_url );
+			}
 		}
 	} // END checkout_invoice()
 
