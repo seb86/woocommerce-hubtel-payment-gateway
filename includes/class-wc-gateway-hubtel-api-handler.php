@@ -135,7 +135,7 @@ class WC_Gateway_Hubtel_API_Handler {
 	 * @return string $url
 	 */
 	public static function get_checkout_url( $order ) {
-		$token = get_post_meta( $order->id, 'hubtel_order_token' );
+		$token = $order->get_transaction_id();
 		$url = 'https://checkout.hubtel.com/checkout/invoice/' . $token;
 
 		return $url;
