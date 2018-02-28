@@ -285,7 +285,7 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 			),
 			'client_id' => array(
 				'title'       => __( 'Client ID', 'wc-hubtel-payment-gateway' ),
-				'type'        => 'text',
+				'type'        => 'password',
 				'description' => __( 'Get your API credentials from Hubtel Applications.', 'wc-hubtel-payment-gateway' ),
 				'default'     => '',
 				'desc_tip'    => true,
