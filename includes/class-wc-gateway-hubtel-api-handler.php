@@ -1,4 +1,15 @@
 <?php
+/**
+ * Hubtel API Handler.
+ *
+ * Creates the invoice for the order and redirects the customer to Hubtel for checkout.
+ *
+ * @class   WC_Gateway_Hubtel_API_Handler
+ * @version 1.0.0
+ * @package WooCommerce Hubtel Payment Gateway/Classes/Payment
+ * @author  Sébastien Dumont
+ */
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
