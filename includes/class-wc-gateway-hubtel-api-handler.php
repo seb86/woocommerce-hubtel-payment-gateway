@@ -7,24 +7,21 @@ class WC_Gateway_Hubtel_API_Handler {
 
 	/**
 	 * @access public
-	 * @static
 	 * @var string Client ID
 	 */
-	public static $client_id = null;
+	public $client_id = null;
 
 	/**
 	 * @access public
-	 * @static
 	 * @var string Client Secret
 	 */
-	public static $client_secret = null;
+	public $client_secret = null;
 
 	/**
 	 * @access protected
-	 * @static
 	 * @var string API URL
 	 */
-	public static $api_url = 'https://api.hubtel.com/v1/merchantaccount/onlinecheckout/invoice/create';
+	public $api_url = 'https://api.hubtel.com/v1/merchantaccount/onlinecheckout/invoice/create';
 
 	/**
 	 * Constructor for the handler.
@@ -48,7 +45,7 @@ class WC_Gateway_Hubtel_API_Handler {
 		$order_total = $order->get_total();
 
 		// Start invoice.
-		$invoice => array(
+		$invoice = array(
 			'invoice' => array(
 				'items' => array(
 					'total_amount' => $order_total,
@@ -73,7 +70,7 @@ class WC_Gateway_Hubtel_API_Handler {
 		// Add taxes.
 		//$invoice['taxes'] = array();
 
-		$invoice['actions'] => array(
+		$invoice['actions'] = array(
 			'cancel_url' => $order->get_cancel_order_url_raw(),
 			'return_url' => $order->get_checkout_order_received_url()
 		);
@@ -91,7 +88,7 @@ class WC_Gateway_Hubtel_API_Handler {
 	 * @param  array  $invoice - The invoice data.
 	 * @return string $redirect_url - URL to Hubtel Checkout.
 	 */
-	public static checkout_invoice( $order_id, $invoice = array() ) {
+	public static function checkout_invoice( $order_id, $invoice = array() ) {
 		$basic_auth_key = 'Basic ' . base64_encode( $this->client_id . ':' . $this->client_secret );
 
 		$send_invoice = json_encode( $invoice, JSON_UNESCAPED_SLASHES );
