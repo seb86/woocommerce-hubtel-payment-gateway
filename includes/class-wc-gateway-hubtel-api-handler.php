@@ -20,19 +20,19 @@ class WC_Gateway_Hubtel_API_Handler {
 	 * @access public
 	 * @var string Client ID
 	 */
-	public $client_id = null;
+	public static $client_id = null;
 
 	/**
 	 * @access public
 	 * @var string Client Secret
 	 */
-	public $client_secret = null;
+	public static $client_secret = null;
 
 	/**
 	 * @access protected
 	 * @var string API URL
 	 */
-	public $api_url = 'https://api.hubtel.com/v1/merchantaccount/onlinecheckout/invoice/create';
+	public static $api_url = 'https://api.hubtel.com/v1/merchantaccount/onlinecheckout/invoice/create';
 
 	/**
 	 * Constructor for the handler.
@@ -40,8 +40,8 @@ class WC_Gateway_Hubtel_API_Handler {
 	 * @access public
 	 */
 	public function __construct( $client_id, $client_secret ) {
-		$this->client_id = $client_id;
-		$this->client_secret = $client_secret;
+		self::$client_id = $client_id;
+		self::$client_secret = $client_secret;
 	}
 
 	/**
@@ -51,7 +51,7 @@ class WC_Gateway_Hubtel_API_Handler {
 	 * @param  object $order
 	 * @param  array  $store
 	 */
-	public function create_invoice_request( $order = array(), $store = array() ) {
+	public function create_invoice_request( $order, $store = array() ) {
 		$order_items = $order->get_items( 'line_item' );
 		$order_total = $order->get_total();
 
@@ -69,7 +69,7 @@ class WC_Gateway_Hubtel_API_Handler {
 
 		// Add Order Items
 		foreach ( $order_items as $item_id => $item ) {
-			$invoice['items']['item_' . $item_id] = array(
+			$invoice['invoice']['items']['item_' . $item_id] = array(
 				'name'        => $item->get_name(),
 				'quantity'    => $item->get_quantity(),
 				'unit_price'  => $order->get_item_total( $item, false, true ),
@@ -79,7 +79,7 @@ class WC_Gateway_Hubtel_API_Handler {
 		}
 
 		// Add taxes.
-		//$invoice['taxes'] = array();
+		//$invoice['invoice']['taxes'] = array();
 
 		$invoice['actions'] = array(
 			'cancel_url' => $order->get_cancel_order_url_raw(),
