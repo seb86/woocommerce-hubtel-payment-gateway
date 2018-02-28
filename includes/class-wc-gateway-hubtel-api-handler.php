@@ -138,9 +138,10 @@ class WC_Gateway_Hubtel_API_Handler {
 			WC_Gateway_Hubtel::log( 'Error Response: ' . wc_print_r( $response, true ) );
 		} else {
 			// Return response.
-			$response_param = json_decode( $response['body'] );
+			$parsed_response = json_decode( $response['body'] );
 
-			WC_Gateway_Hubtel::log( 'Returned Response: ' . wc_print_r( $response_param, true ) );
+			WC_Gateway_Hubtel::log( 'Hubtel Response Code: ' . $parsed_response->ResponseCode );
+			WC_Gateway_Hubtel::log( 'Hubtel Response Message: ' . $parsed_response->Message );
 
 			$return_response = array(
 				'checkout_url' => $response_param->response_text,
