@@ -108,6 +108,18 @@ if ( ! class_exists( 'WC_Hubtel_Payment_Gateway' ) ) {
 		}
 
 		/**
+		 * Get the Plugin URL.
+		 *
+		 * @access public
+		 * @static
+		 * @since  1.0.0
+		 * @static
+		 */
+		public static function plugin_url() {
+			return plugins_url( basename( plugin_dir_path(__FILE__) ), basename( __FILE__ ) );
+		} // END plugin_url()
+
+		/**
 		 * Get the Plugin Path.
 		 *
 		 * @access public
