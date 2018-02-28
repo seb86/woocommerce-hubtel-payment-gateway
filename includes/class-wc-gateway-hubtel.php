@@ -20,11 +20,19 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 
-	/** @var bool Whether or not logging is enabled */
+	/**
+	 * @access public
+	 * @static
+	 * @var bool Whether or not logging is enabled
+	 */
 	public static $log_enabled = false;
 
-	/** @var WC_Logger Logger instance */
-	public static $log = false;
+	/**
+	 * @access public
+	 * @static
+	 * @var WC_Logger Logger instance
+	 */
+	public static $logger;
 
 	/** @var string */
 	public static $logout_url = '';
@@ -86,28 +94,40 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 	 * Utilize WC logger class
 	 *
 	 * @access public
-	 */
-
-
-		}
-
-
-	/**
-	 * Logging method.
-	 *
-	 * @access public
 	 * @static
-	 * @param  string $message Log message.
-	 * @param  string $level   Optional. Default 'info'.
-	 *     emergency|alert|critical|error|warning|notice|info|debug
+	 * @param string $message
 	 */
-	public static function log( $message, $level = 'info' ) {
-		if ( self::$log_enabled ) {
-			if ( empty( self::$log ) ) {
-				self::$log = wc_get_logger();
-			}
-			self::$log->log( $level, $message, array( 'source' => 'hubtel' ) );
+	public static function log( $message, $start_time = null, $end_time = null ) {
+		if ( ! self::$log_enabled ) {
+			return;
 		}
+
+		if ( empty( self::$logger ) ) {
+			self::$logger = new WC_Logger();
+		}
+
+		$settings = get_option( 'woocommerce_hubtel_settings' );
+
+		if ( empty( $settings ) || isset( $settings['logging'] ) && 'yes' !== $settings['logging'] ) {
+			return;
+		}
+
+		if ( ! is_null( $start_time ) ) {
+
+			$formatted_start_time = date_i18n( get_option( 'date_format' ) . ' g:ia', $start_time );
+			$end_time             = is_null( $end_time ) ? current_time( 'timestamp' ) : $end_time;
+			$formatted_end_time   = date_i18n( get_option( 'date_format' ) . ' g:ia', $end_time );
+			$elapsed_time         = round( abs( $end_time - $start_time ) / 60, 2 );
+			$log_entry  = '====Start Log ' . $formatted_start_time . '====' . "\n" . $message . "\n";
+			$log_entry .= '====End Log ' . $formatted_end_time . ' (' . $elapsed_time . ')====' . "\n\n";
+
+		} else {
+
+			$log_entry = '====Start Log====' . "\n" . $message . "\n" . '====End Log====' . "\n\n";
+
+		}
+
+		self::$logger->add( 'woocommerce-gateway-hubtel', $log_entry );
 	} // END log()
 
 	/**
@@ -166,7 +186,7 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 				'title'       => __( 'Title', 'wc-hubtel-payment-gateway' ),
 				'type'        => 'text',
 				'description' => __( 'This controls the title which the user sees during checkout.', 'wc-hubtel-payment-gateway' ),
-				'default'     => _x( 'Check payments', 'Check payment method', 'wc-hubtel-payment-gateway' ),
+				'default'     => _x( 'Hubtel', 'Hubtel payment method', 'wc-hubtel-payment-gateway' ),
 				'desc_tip'    => true,
 			),
 			'description' => array(
