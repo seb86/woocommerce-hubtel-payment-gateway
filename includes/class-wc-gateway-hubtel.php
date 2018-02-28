@@ -60,6 +60,12 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 
 	/**
 	 * @access public
+	 * @var string Store Postal Address
+	 */
+	public $store_postal_address;
+
+	/**
+	 * @access public
 	 * @var string Store Phone Number
 	 */
 	public $store_phone;
@@ -97,20 +103,21 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 		$this->init_settings();
 
 		// Define user set variables.
-		$this->title          = $this->get_option( 'title' );
-		$this->description    = $this->get_option( 'description' );
-		$this->debug          = 'yes' === $this->get_option( 'debug', 'no' );
+		$this->title                = $this->get_option( 'title' );
+		$this->description          = $this->get_option( 'description' );
+		$this->debug                = 'yes' === $this->get_option( 'debug', 'no' );
 
-		$this->client_id      = $this->get_option( 'client_id' );
-		$this->client_secret  = $this->get_option( 'client_secret' );
+		$this->client_id            = $this->get_option( 'client_id' );
+		$this->client_secret        = $this->get_option( 'client_secret' );
 
 		// Store details.
-		$this->store_name     = $this->get_option( 'store_name' );
-		$this->store_tagline  = $this->get_option( 'store_tagline' );
-		$this->store_phone    = $this->get_option( 'store_phone' );
-		$this->website_url    = $this->get_option( 'website_url' );
+		$this->store_name           = $this->get_option( 'store_name' );
+		$this->store_tagline        = $this->get_option( 'store_tagline' );
+		$this->store_postal_address = $this->get_option( 'store_postal_address' );
+		$this->store_phone          = $this->get_option( 'store_phone' );
+		$this->website_url          = $this->get_option( 'website_url' );
 
-		self::$log_enabled    = $this->debug;
+		self::$log_enabled          = $this->debug;
 
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
 
@@ -120,6 +127,8 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 			if ( $this->client_id && $this->client_secret ) {
 				include_once( 'class-wc-gateway-hubtel-api-handler.php' );
 				$this->hubtel_handler = new WC_Gateway_Hubtel_API_Handler( $this->client_id, $this->client_secret );
+			} else if ( empty( $this->client_id ) && empty( $this->client_secret ) ) {
+				self::log( __( 'Hubtel requires API credentials to be set.', 'wc-hubtel-payment-gateway' ) );
 			}
 		}
 	}
@@ -258,6 +267,14 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 				'title'       => __( 'Store Tagline', 'wc-hubtel-payment-gateway' ),
 				'type'        => 'text',
 				'description' => __( 'Your Store Tagline for the Invoice.', 'wc-hubtel-payment-gateway' ),
+				'default'     => '',
+				'desc_tip'    => true,
+				'placeholder' => __( 'Optional', 'wc-hubtel-payment-gateway' ),
+			),
+			'store_postal_address' => array(
+				'title'       => __( 'Store Postal Address', 'wc-hubtel-payment-gateway' ),
+				'type'        => 'text',
+				'description' => __( 'Your Store Postal Address for the Invoice.', 'wc-hubtel-payment-gateway' ),
 				'default'     => '',
 				'desc_tip'    => true,
 				'placeholder' => __( 'Optional', 'wc-hubtel-payment-gateway' ),
@@ -406,9 +423,9 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 	 * @param  WC_Order $order
 	 * @return bool
 	 */
-	public function can_refund_order( $order ) {
+	/*public function can_refund_order( $order ) {
 		return $order && $order->get_transaction_id();
-	} // END can_refund_order()
+	} // END can_refund_order()*/
 
 	/**
 	 * Process a refund if supported.
@@ -419,11 +436,11 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 	 * @param  string $reason
 	 * @return bool|WP_Error
 	 */
-	public function process_refund( $order_id, $amount = null, $reason = '' ) {
+	/*public function process_refund( $order_id, $amount = null, $reason = '' ) {
 		$order = wc_get_order( $order_id );
 
 		if ( ! $this->can_refund_order( $order ) ) {
-			$this->log( 'Refund Failed: No transaction ID', 'error' );
+			$this->log( 'Refund Failed: No transaction ID' );
 			return new WP_Error( 'error', __( 'Refund failed: No transaction ID', 'wc-hubtel-payment-gateway' ) );
 		}
 
@@ -432,7 +449,7 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 		$result = WC_Gateway_Hubtel_API_Handler::refund_transaction( $order, $amount, $reason );
 
 		if ( is_wp_error( $result ) ) {
-			$this->log( 'Refund Failed: ' . $result->get_error_message(), 'error' );
+			$this->log( 'Refund Failed: ' . $result->get_error_message() );
 			return new WP_Error( 'error', $result->get_error_message() );
 		}
 
