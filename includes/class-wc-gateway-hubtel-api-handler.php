@@ -221,6 +221,67 @@ class WC_Gateway_Hubtel_API_Handler {
 	} // END checkout_invoice()
 
 	/**
+	 * Returns the status of Invoice.
+	 *
+	 * @access public
+	 * @static
+	 * @param  string $token
+	 * @return string $return_response
+	 */
+	public static function get_invoice_status( $token ) {
+		// Get headers.
+		$headers = self::get_headers();
+
+		$post = array(
+			'method'  => 'GET',
+			'headers' => $headers,
+			'timeout' => 70,
+		);
+
+		WC_Gateway_Hubtel::log( 'Data Posted: ' . wc_print_r( $post, true ) );
+
+		$response = wp_safe_remote_get( self::$invoice_url . '/' . $token, $post );
+
+		// Log error returned if response failed.
+		if ( is_wp_error( $response ) || empty( $response['body'] ) ) {
+			WC_Gateway_Hubtel::log( 'Error Response: ' . wc_print_r( $response, true ) );
+
+			return new WP_Error( sprintf( __( 'Error! - %s', 'wc-hubtel-payment-gateway' ), $response->get_error_message() ) );
+		} else {
+			// Return response.
+			$parsed_response = json_decode( $response['body'] );
+
+			// Check the response was good.
+			if ( 200 !== $response['response']['code'] ) {
+				WC_Gateway_Hubtel::log( 'Returned Response: ' . wc_print_r( $parsed_response, true ) );
+			}
+
+			$error_returned = false;
+			$response_code  = null;
+			$response_text  = null;
+
+			// Find response code and text.
+			if ( isset( $parsed_response->ResponseCode ) || isset( $parsed_response->response_code ) ) {
+				if ( empty( $parsed_response->ResponseCode ) ) {
+					$response_code = $parsed_response->response_code;
+					$response_text = $parsed_response->response_text;
+				}
+
+				if ( empty( $parsed_response->response_code ) ) {
+					$response_code = $parsed_response->ResponseCode;
+					$response_text = $parsed_response->Message;
+				}
+
+				// Log Hubtel response.
+				WC_Gateway_Hubtel::log( 'Hubtel Response Code: ' . $response_code );
+				WC_Gateway_Hubtel::log( 'Hubtel Response Message: ' . $response_text );
+
+				return $parsed_response;
+			}
+		}
+	} // END get_invoice_status()
+
+	/**
 	 * Gets the URL to Hubtel Checkout should the order be incomplete.
 	 *
 	 * @access public
