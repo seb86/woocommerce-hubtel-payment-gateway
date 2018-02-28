@@ -72,9 +72,6 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 		//add_action( 'woocommerce_order_status_on-hold_to_processing', array( $this, 'capture_payment' ) );
 		//add_action( 'woocommerce_order_status_on-hold_to_completed', array( $this, 'capture_payment' ) );
 
-		add_filter( 'woocommerce_currencies', array( $this, 'add_hubtel_supported_currencies' ) );
-		add_filter( 'woocommerce_currency_symbol', array( $this, 'add_hubtel_supported_currency_symbols' ), 10, 2 );
-
 		if ( ! $this->is_valid_for_use() ) {
 			$this->enabled = 'no';
 		} else {
@@ -86,40 +83,14 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * Adds Ghana Cedi and Kenya Shilling Currency.
+	 * Utilize WC logger class
 	 *
 	 * @access public
-	 * @param  array $currencies
-	 * @return array $currencies
 	 */
-	public function add_hubtel_supported_currencies( $currencies ) {
-		$currencies['GHS'] = __( 'Ghana Cedi', 'wc-hubtel-payment-gateway' );
-		$currencies['KES'] = __( 'Kenya Shilling', 'wc-hubtel-payment-gateway' );
 
-		return $currencies;
-	} // END add_hubtel_supported_currencies()
 
-	/**
-	 * Adds Ghana Cedi and Kenya Shilling Currency Symbols.
-	 *
-	 * @access public
-	 * @param  string $currency_symbol
-	 * @param  array  $currency
-	 * @return array  $currency_symbol
-	 */
-	public function add_hubtel_supported_currency_symbols( $currency_symbol, $currency ) {
-		switch( $currency ) {
-			case 'GHS':
-				$currency_symbol = 'GH¢';
-				break;
-
-			case 'KES':
-				$currency_symbol = 'KSh';
-				break;
 		}
 
-		return $currency_symbol;
-	} // END add_hubtel_supported_currency_symbols()
 
 	/**
 	 * Logging method.
