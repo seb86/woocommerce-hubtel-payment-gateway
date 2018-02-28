@@ -239,10 +239,10 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 				'title'       => __( 'Description', 'wc-hubtel-payment-gateway' ),
 				'type'        => 'textarea',
 				'description' => __( 'Payment method description that the customer will see on your checkout.', 'wc-hubtel-payment-gateway' ),
-				'default'     => __( 'Hubtel sends customers to Hubtel Checkout to enter their payment information.', 'wc-hubtel-payment-gateway' ),
+				'default'     => __( 'Go to Hubtel Checkout to pay via credit card or mobile payment.', 'wc-hubtel-payment-gateway' ),
 				'desc_tip'    => true,
 			),
-			'debug'                 => array(
+			'debug' => array(
 				'title'       => __( 'Debug log', 'wc-hubtel-payment-gateway' ),
 				'type'        => 'checkbox',
 				'label'       => __( 'Enable logging', 'wc-hubtel-payment-gateway' ),
