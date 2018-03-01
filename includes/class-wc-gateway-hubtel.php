@@ -379,12 +379,12 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 
 		if ( $order->get_total() > 0 ) {
 			$store = array(
-				'name'           => $this->store_name,
-				'tagline'        => $this->store_tagline,
-				'postal_address' => $this->store_postal_address,
-				'phone'          => $this->store_phone,
-				'logo_url'       => $this->logo_url,
-				'website_url'    => $this->website_url
+				'name'           => isset( $this->store_name ) ? $this->store_name : get_bloginfo('name'),
+				'tagline'        => isset( $this->store_tagline ) ? $this->store_tagline : '',
+				'postal_address' => isset( $this->store_postal_address ) ? $this->store_postal_address : '',
+				'phone'          => isset( $this->store_phone ) ? $this->store_phone : '',
+				'logo_url'       => isset( $this->logo_url ) ? $this->logo_url : '',
+				'website_url'    => isset( $this->website_url ) ? $this->website_url : get_site_url()
 			);
 
 			$invoice = $this->hubtel_handler->create_invoice_request( $order, $store );
