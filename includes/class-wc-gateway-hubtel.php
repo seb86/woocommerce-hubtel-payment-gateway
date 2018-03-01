@@ -72,6 +72,12 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 
 	/**
 	 * @access public
+	 * @var string Logo URL
+	 */
+	public $logo_url;
+
+	/**
+	 * @access public
 	 * @var string Website URL
 	 */
 	public $website_url;
@@ -115,6 +121,7 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 		$this->store_tagline        = $this->get_option( 'store_tagline' );
 		$this->store_postal_address = $this->get_option( 'store_postal_address' );
 		$this->store_phone          = $this->get_option( 'store_phone' );
+		$this->logo_url             = $this->get_option( 'logo_url' );
 		$this->website_url          = $this->get_option( 'website_url' );
 
 		self::$log_enabled          = $this->debug;
@@ -253,12 +260,12 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 			'store_details' => array(
 				'title'       => __( 'Store Details', 'wc-hubtel-payment-gateway' ),
 				'type'        => 'title',
-				'description' => __( 'Enter your Hubtel Store information.', 'wc-hubtel-payment-gateway' ),
+				'description' => __( 'Specify your store information.', 'wc-hubtel-payment-gateway' ),
 			),
 			'store_name' => array(
 				'title'       => __( 'Store Name', 'wc-hubtel-payment-gateway' ),
 				'type'        => 'text',
-				'description' => __( 'Your Store Name for the Invoice.', 'wc-hubtel-payment-gateway' ),
+				'description' => __( 'The Store Name.', 'wc-hubtel-payment-gateway' ),
 				'default'     => get_bloginfo('name'),
 				'desc_tip'    => true,
 				'placeholder' => __( 'Required', 'wc-hubtel-payment-gateway' ),
@@ -266,7 +273,7 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 			'store_tagline' => array(
 				'title'       => __( 'Store Tagline', 'wc-hubtel-payment-gateway' ),
 				'type'        => 'text',
-				'description' => __( 'Your Store Tagline for the Invoice.', 'wc-hubtel-payment-gateway' ),
+				'description' => __( 'The tagline of the store.', 'wc-hubtel-payment-gateway' ),
 				'default'     => '',
 				'desc_tip'    => true,
 				'placeholder' => __( 'Optional', 'wc-hubtel-payment-gateway' ),
@@ -274,7 +281,7 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 			'store_postal_address' => array(
 				'title'       => __( 'Store Postal Address', 'wc-hubtel-payment-gateway' ),
 				'type'        => 'text',
-				'description' => __( 'Your Store Postal Address for the Invoice.', 'wc-hubtel-payment-gateway' ),
+				'description' => __( 'The postal address of the store.', 'wc-hubtel-payment-gateway' ),
 				'default'     => '',
 				'desc_tip'    => true,
 				'placeholder' => __( 'Optional', 'wc-hubtel-payment-gateway' ),
@@ -282,7 +289,15 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 			'store_phone' => array(
 				'title'       => __( 'Store Phone Number', 'wc-hubtel-payment-gateway' ),
 				'type'        => 'text',
-				'description' => __( 'Your Store Phone Number for the Invoice.', 'wc-hubtel-payment-gateway' ),
+				'description' => __( 'The phone number of the store.', 'wc-hubtel-payment-gateway' ),
+				'default'     => '',
+				'desc_tip'    => true,
+				'placeholder' => __( 'Optional', 'wc-hubtel-payment-gateway' ),
+			),
+			'logo_url' => array(
+				'title'       => __( 'Logo URL', 'wc-hubtel-payment-gateway' ),
+				'type'        => 'text',
+				'description' => __( 'The URL to the logo of your online store. This is displayed on the checkout invoice.', 'wc-hubtel-payment-gateway' ),
 				'default'     => '',
 				'desc_tip'    => true,
 				'placeholder' => __( 'Optional', 'wc-hubtel-payment-gateway' ),
@@ -290,7 +305,7 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 			'website_url' => array(
 				'title'       => __( 'Website URL', 'wc-hubtel-payment-gateway' ),
 				'type'        => 'text',
-				'description' => __( 'Your Store Website URL for the Invoice.', 'wc-hubtel-payment-gateway' ),
+				'description' => __( 'The website URL of your store.', 'wc-hubtel-payment-gateway' ),
 				'default'     => get_site_url(),
 				'desc_tip'    => true,
 				'placeholder' => get_site_url(),
@@ -303,7 +318,7 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 			'client_id' => array(
 				'title'       => __( 'Client ID', 'wc-hubtel-payment-gateway' ),
 				'type'        => 'password',
-				'description' => __( 'Get your API credentials from Hubtel Applications.', 'wc-hubtel-payment-gateway' ),
+				'description' => __( 'Enter your Client ID from your API credentials located at Hubtel Applications.', 'wc-hubtel-payment-gateway' ),
 				'default'     => '',
 				'desc_tip'    => true,
 				'placeholder' => __( 'Required', 'wc-hubtel-payment-gateway' ),
@@ -311,7 +326,7 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 			'client_secret' => array(
 				'title'       => __( 'Client Secret', 'wc-hubtel-payment-gateway' ),
 				'type'        => 'password',
-				'description' => __( 'Get your API credentials from Hubtel Applications.', 'wc-hubtel-payment-gateway' ),
+				'description' => __( 'Enter your Client Secret from your API credentials located at Hubtel Applications.', 'wc-hubtel-payment-gateway' ),
 				'default'     => '',
 				'desc_tip'    => true,
 				'placeholder' => __( 'Required', 'wc-hubtel-payment-gateway' ),
@@ -368,6 +383,7 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 				'tagline'        => $this->store_tagline,
 				'postal_address' => $this->store_postal_address,
 				'phone'          => $this->store_phone,
+				'logo_url'       => $this->logo_url,
 				'website_url'    => $this->website_url
 			);
 
