@@ -93,9 +93,20 @@ class WC_Gateway_Hubtel_API_Handler {
 			);
 		}
 
+		// Add actions for returning the customer to the site.
 		$invoice['actions'] = array(
 			'cancel_url' => $order->get_cancel_order_url_raw(),
 			'return_url' => $order->get_checkout_order_received_url()
+		);
+
+		// Adds custom data to the invoice.
+		$invoice['custom_data'] = array(
+			'order_number'     => $order->get_order_number(),
+			'customer_id'      => $order->get_customer_id(),
+			'currency'         => $order->get_currency(),
+			'billing_address'  => $order->get_address( 'billing' ),
+			'shipping_address' => $order->get_address( 'shipping' ),
+			'shipping_total'   => $order->get_shipping_total()
 		);
 
 		$invoice = apply_filters( 'woocommerce_hubtel_gateway_invoice_request', $invoice );
