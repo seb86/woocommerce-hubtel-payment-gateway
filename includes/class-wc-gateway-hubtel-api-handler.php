@@ -83,8 +83,15 @@ class WC_Gateway_Hubtel_API_Handler {
 			);
 		}
 
-		// Add taxes.
-		//$invoice['invoice']['taxes'] = array();
+		$tax_total = $order->get_total_tax();
+
+		if ( $tax_total > 0 ) {
+			// Add taxes.
+			$invoice['invoice']['taxes'] = array(
+				'name'   => WC()->countries->tax_or_vat(),
+				'amount' => $tax_total,
+			);
+		}
 
 		$invoice['actions'] = array(
 			'cancel_url' => $order->get_cancel_order_url_raw(),
