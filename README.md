@@ -2,11 +2,14 @@
 
 Provides a payment gateway for Hubtel.
 
-[View Documentation](https://github.com/seb86/woocommerce-hubtel-payment-gateway/wiki)
+![Hubtel](https://cldup.com/4LqRHM-Djg.png)
+
+[View Documentation](https://github.com/seb86/woocommerce-hubtel-payment-gateway/wiki) on how to setup.
 
 ### Requirements
 * WooCommerce v3.0.0+
 * WordPress v4.4+
+* Store Currency: Ghana cedi 
 
 ### Bugs
 If you [find an issue](https://github.com/seb86/woocommerce-hubtel-payment-gateway/issues?state=open) that has not been reported, [create a new issue](https://github.com/seb86/woocommerce-hubtel-payment-gateway/issues/new). You can also send a pull request with your bug fixes.
