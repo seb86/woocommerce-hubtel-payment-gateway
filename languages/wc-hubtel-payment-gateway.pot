@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Hubtel Payment Gateway for WooCommerce 1.0.0\n"
 "Report-Msgid-Bugs-To: "
 "https://github.com/seb86/woocommerce-hubtel-payment-gateway/issues\n"
-"POT-Creation-Date: 2018-02-28 23:55:05+00:00\n"
+"POT-Creation-Date: 2018-03-01 15:12:23+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,171 +15,189 @@ msgstr ""
 "Language: en_US\n"
 "X-Generator: grunt-wp-i18n1.0.1\n"
 
-#: includes/class-wc-gateway-hubtel-api-handler.php:69
+#: includes/class-wc-gateway-hubtel-api-handler.php:70
 msgid "Total cost of %1$s item(s) bought on %2$s."
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel-api-handler.php:147
-#: includes/class-wc-gateway-hubtel-api-handler.php:249
+#: includes/class-wc-gateway-hubtel-api-handler.php:164
+#: includes/class-wc-gateway-hubtel-api-handler.php:266
 msgid "Error! - %s"
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:93
+#: includes/class-wc-gateway-hubtel.php:99
 msgid "Proceed to Hubtel"
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:94
+#: includes/class-wc-gateway-hubtel.php:100
 msgid "Hubtel"
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:95
+#: includes/class-wc-gateway-hubtel.php:101
 msgid ""
 "Hubtel sends customers to Hubtel Checkout to enter their payment "
 "information."
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:131
+#: includes/class-wc-gateway-hubtel.php:138
 msgid "Hubtel requires API credentials to be set."
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:186
+#: includes/class-wc-gateway-hubtel.php:193
 msgid "Hubtel acceptance mark"
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:212
+#: includes/class-wc-gateway-hubtel.php:219
 msgid "Gateway disabled"
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:212
+#: includes/class-wc-gateway-hubtel.php:219
 msgid "Hubtel does not support your store currency."
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:226
+#: includes/class-wc-gateway-hubtel.php:233
 msgid "Enable/Disable"
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:228
+#: includes/class-wc-gateway-hubtel.php:235
 msgid "Enable Hubtel"
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:232
+#: includes/class-wc-gateway-hubtel.php:239
 msgid "Title"
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:234
+#: includes/class-wc-gateway-hubtel.php:241
 msgid "This controls the title which the user sees during checkout."
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:239
+#: includes/class-wc-gateway-hubtel.php:246
 msgid "Description"
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:241
+#: includes/class-wc-gateway-hubtel.php:248
 msgid "Payment method description that the customer will see on your checkout."
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:242
+#: includes/class-wc-gateway-hubtel.php:249
 msgid "Go to Hubtel Checkout to pay via credit card or mobile payment."
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:246
+#: includes/class-wc-gateway-hubtel.php:253
 msgid "Debug log"
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:248
+#: includes/class-wc-gateway-hubtel.php:255
 msgid "Enable logging"
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:251
+#: includes/class-wc-gateway-hubtel.php:258
 #. translators: %s: URL
 msgid "Log Hubtel events, such as payment requests, inside %s"
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:254
+#: includes/class-wc-gateway-hubtel.php:261
 msgid "Store Details"
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:256
-msgid "Enter your Hubtel Store information."
+#: includes/class-wc-gateway-hubtel.php:263
+msgid "Specify your store information."
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:259
+#: includes/class-wc-gateway-hubtel.php:266
 msgid "Store Name"
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:261
-msgid "Your Store Name for the Invoice."
+#: includes/class-wc-gateway-hubtel.php:268
+msgid "The Store Name."
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:264
-#: includes/class-wc-gateway-hubtel.php:309
-#: includes/class-wc-gateway-hubtel.php:317
+#: includes/class-wc-gateway-hubtel.php:271
+#: includes/class-wc-gateway-hubtel.php:324
+#: includes/class-wc-gateway-hubtel.php:332
 msgid "Required"
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:267
+#: includes/class-wc-gateway-hubtel.php:274
 msgid "Store Tagline"
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:269
-msgid "Your Store Tagline for the Invoice."
+#: includes/class-wc-gateway-hubtel.php:276
+msgid "The tagline of the store."
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:272
-#: includes/class-wc-gateway-hubtel.php:280
-#: includes/class-wc-gateway-hubtel.php:288
+#: includes/class-wc-gateway-hubtel.php:279
+#: includes/class-wc-gateway-hubtel.php:287
+#: includes/class-wc-gateway-hubtel.php:295
+#: includes/class-wc-gateway-hubtel.php:303
 msgid "Optional"
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:275
+#: includes/class-wc-gateway-hubtel.php:282
 msgid "Store Postal Address"
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:277
-msgid "Your Store Postal Address for the Invoice."
+#: includes/class-wc-gateway-hubtel.php:284
+msgid "The postal address of the store."
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:283
+#: includes/class-wc-gateway-hubtel.php:290
 msgid "Store Phone Number"
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:285
-msgid "Your Store Phone Number for the Invoice."
+#: includes/class-wc-gateway-hubtel.php:292
+msgid "The phone number of the store."
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:291
+#: includes/class-wc-gateway-hubtel.php:298
+msgid "Logo URL"
+msgstr ""
+
+#: includes/class-wc-gateway-hubtel.php:300
+msgid ""
+"The URL to the logo of your online store. This is displayed on the checkout "
+"invoice."
+msgstr ""
+
+#: includes/class-wc-gateway-hubtel.php:306
 msgid "Website URL"
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:293
-msgid "Your Store Website URL for the Invoice."
+#: includes/class-wc-gateway-hubtel.php:308
+msgid "The website URL of your store."
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:299
+#: includes/class-wc-gateway-hubtel.php:314
 msgid "API Credentials"
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:301
+#: includes/class-wc-gateway-hubtel.php:316
 msgid ""
 "Enter your Hubtel API credentials to process payments via Hubtel. You can "
 "access your API credentials via <a href=\"%s\" target=\"_blank\">Hubtel "
 "Applications</a>."
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:304
+#: includes/class-wc-gateway-hubtel.php:319
 msgid "Client ID"
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:306
-#: includes/class-wc-gateway-hubtel.php:314
-msgid "Get your API credentials from Hubtel Applications."
+#: includes/class-wc-gateway-hubtel.php:321
+msgid ""
+"Enter your Client ID from your API credentials located at Hubtel "
+"Applications."
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:312
+#: includes/class-wc-gateway-hubtel.php:327
 msgid "Client Secret"
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:361
+#: includes/class-wc-gateway-hubtel.php:329
+msgid ""
+"Enter your Client Secret from your API credentials located at Hubtel "
+"Applications."
+msgstr ""
+
+#: includes/class-wc-gateway-hubtel.php:376
 msgid ""
 "This order had previously failed and can not be paid for. If this is an "
 "error please report to site administrator."
@@ -225,7 +243,7 @@ msgstr ""
 msgid "https://sebastiendumont.com"
 msgstr ""
 
-#: includes/class-wc-gateway-hubtel.php:235
+#: includes/class-wc-gateway-hubtel.php:242
 msgctxt "Hubtel payment method"
 msgid "Hubtel"
 msgstr ""
