@@ -335,6 +335,28 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 	} // END init_form_fields()
 
 	/**
+	 * Gets order token if exists.
+	 *
+	 * @access public
+	 * @param  object $order
+	 * @return string $token
+	 */
+	public function get_order_token( $order ) {
+		// Check which version of WooCommerce before saving the transaction ID.
+		if ( ! defined( 'WC_VERSION' ) || version_compare( WC_VERSION, WC_Hubtel_Payment_Gateway::$required_woo, '=>' ) ) {
+			$token = $order->get_transaction_id();
+		} else {
+			$token = get_post_meta( $order->get_order_number(), '_transaction_id' );
+		}
+
+		if ( empty( $token ) ) {
+			return;
+		}
+
+		return wc_clean( $token );
+	} // END get_order_token()
+
+	/**
 	 * Get the invoice status.
 	 *
 	 * @access public
@@ -342,7 +364,12 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 	 * @return string
 	 */
 	public function get_invoice_status( $order ) {
-		$token              = $order->get_transaction_id();
+		$token = self::get_order_token( $order );
+
+		if ( empty( $token ) ) {
+			return;
+		}
+
 		$get_invoice_status = $this->hubtel_handler->get_invoice_status( $token );
 
 		return $get_invoice_status;
@@ -377,6 +404,42 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 			return;
 		}
 
+		$order_token = self::get_order_token( $order );
+
+		// Check if order already has a transaction ID first.
+		$get_invoice_status = self::get_invoice_status( $order );
+
+		// If invoice status returned with a response.
+		if ( ! empty( $get_invoice_status ) ) {
+
+			$invoice_response_code = wc_clean( $get_invoice_status->response_code );
+
+			// Check if the invoice exists.
+			if ( $invoice_response_code !== '00' ) {
+				$invoice_status = wc_clean( $get_invoice_status->status );
+
+				// If invoice found and is pending then redirect to Hubtel Checkout to complete payment.
+				if ( ! empty( $invoice_status ) ) {
+					// Log invoice status response.
+					$this->log( 'Invoice Status for ('. $order_token . '): ' . strtoupper( $invoice_status ) );
+
+					if ( $invoice_status == 'pending' ) {
+						wc_add_notice( __( 'This order is currently pending.', 'wc-hubtel-payment-gateway' ) );
+						return;
+					}
+					else if ( $invoice_status == 'completed' ) {
+						wc_add_notice( __( 'This order is completed. No need to pay again.', 'wc-hubtel-payment-gateway' ) );
+						return;
+					}
+					else if ( $invoice_status == 'cancelled' ) {
+						wc_add_notice( __( 'This order was cancelled and can not be paid for.', 'wc-hubtel-payment-gateway' ), 'error' );
+						return;
+					}
+				}
+			}
+		}
+
+		// If invoice does not exists then create one.
 		if ( $order->get_total() > 0 ) {
 			$store = array(
 				'name'           => isset( $this->store_name ) ? $this->store_name : get_bloginfo('name'),
@@ -393,18 +456,34 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 
 			$response = $this->hubtel_handler->checkout_invoice( $order_id, $invoice );
 
-			if ( ! empty( $response->checkout_url ) ) {
+			// Get the checkout url if returned.
+			$checkout_url = ! empty( $response['checkout_url'] ) ? $response['checkout_url'] : '';
+
+			if ( $checkout_url ) {
 				$this->log( 'Checkout Response: ' . wc_print_r( $response, true ) );
 
 				// Save the checkout token as transaction ID.
-				$token = $response->token;
-				$this->log( 'Checkout Token: ' . $token );
-				$order->set_transaction_id( $token );
+				$token = ! empty( $response['token'] ) ? $response['token'] : '';
+
+				if ( $token ) {
+					$this->log( 'Checkout Token: ' . $token );
+
+					// Check which version of WooCommerce before saving the transaction ID.
+					if ( ! defined( 'WC_VERSION' ) || version_compare( WC_VERSION, WC_Hubtel_Payment_Gateway::$required_woo, '=>' ) ) {
+						$order->set_transaction_id( $token );
+					} else {
+						update_post_meta( $order_id, '_transaction_id', $token );
+					}
+
+					$order->add_order_note( sprintf( __( 'Hubtel Checkout Token: %s', 'wc-hubtel-payment-gateway' ), $token ) );
+				} else {
+					$this->log( 'Error: Token did not return for the invoice!' );
+				}
 
 				// Redirect customer to Hubtel checkout.
 				return array(
 					'result'   => 'success',
-					'redirect' => esc_url_raw( $response->checkout_url ),
+					'redirect' => esc_url_raw( $checkout_url ),
 				);
 			} else {
 				if ( ! empty( $response ) ) {
