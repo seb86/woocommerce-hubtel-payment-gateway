@@ -249,15 +249,15 @@ class WC_Gateway_Hubtel_API_Handler {
 		// Get headers.
 		$headers = self::get_headers();
 
-		$post = array(
+		$get = array(
 			'method'  => 'GET',
 			'headers' => $headers,
 			'timeout' => 70,
 		);
 
-		WC_Gateway_Hubtel::log( 'Data Posted: ' . wc_print_r( $post, true ) );
+		WC_Gateway_Hubtel::log( 'Data Returned: ' . wc_print_r( $get, true ) );
 
-		$response = wp_safe_remote_get( self::$invoice_url . '/' . $token, $post );
+		$response = wp_safe_remote_get( self::$invoice_url . '/' . $token, $get );
 
 		// Log error returned if response failed.
 		if ( is_wp_error( $response ) || empty( $response['body'] ) ) {
@@ -292,9 +292,9 @@ class WC_Gateway_Hubtel_API_Handler {
 				// Log Hubtel response.
 				WC_Gateway_Hubtel::log( 'Hubtel Response Code: ' . $response_code );
 				WC_Gateway_Hubtel::log( 'Hubtel Response Message: ' . $response_text );
-
-				return $parsed_response;
 			}
+
+			return $parsed_response;
 		}
 	} // END get_invoice_status()
 
