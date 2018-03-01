@@ -47,7 +47,7 @@ if ( ! class_exists( 'WC_Hubtel_Payment_Gateway' ) ) {
 		 * @access public
 		 * @since  1.0.0
 		 */
-		public $required_woo = '3.0.0';
+		public static $required_woo = '3.0.0';
 
 		/**
 		 * Main WC_Hubtel_Payment_Gateway Instance.
@@ -139,7 +139,7 @@ if ( ! class_exists( 'WC_Hubtel_Payment_Gateway' ) ) {
 		 */
 		public function check_enviroment() {
 			// Check we're running the required version of WooCommerce.
-			if ( ! defined( 'WC_VERSION' ) || version_compare( WC_VERSION, $this->required_woo, '<' ) ) {
+			if ( ! defined( 'WC_VERSION' ) || version_compare( WC_VERSION, self::$required_woo, '<' ) ) {
 				add_action( 'admin_notices', array( $this, 'admin_notice' ) );
 				return false;
 			}
@@ -157,7 +157,7 @@ if ( ! class_exists( 'WC_Hubtel_Payment_Gateway' ) ) {
 		 * @return void
 		 */
 		public function admin_notice() {
-			echo '<div class="error"><p>' . sprintf( __( '%1$s requires at least %2$s v%3$s or higher.', 'wc-hubtel-payment-gateway' ), 'Hubtel Payment Gateway for WooCommerce', 'WooCommerce', $this->required_woo ) . '</p></div>';
+			echo '<div class="error"><p>' . sprintf( __( '%1$s requires at least %2$s v%3$s or higher.', 'wc-hubtel-payment-gateway' ), 'Hubtel Payment Gateway for WooCommerce', 'WooCommerce', self::$required_woo ) . '</p></div>';
 		} // END admin_notice()
 
 		/*-----------------------------------------------------------------------------------*/
