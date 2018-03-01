@@ -64,13 +64,12 @@ class WC_Gateway_Hubtel_API_Handler {
 		// Start invoice.
 		$invoice = array(
 			'invoice' => array(
-				'items' => array(
-					'total_amount' => $order_total,
-					'description'  => sprintf( __( 'Total cost of %1$s item(s) bought on %2$s.', 'wc-hubtel-payment-gateway' ), count( $order_items ), get_bloginfo('name') )
-),
-				//'taxes' => array(),
-				'store' => $store,
-			)
+				'items'        => array(),
+				'taxes'        => array(),
+				'total_amount' => $order_total,
+				'description'  => sprintf( __( 'Total cost of %1$s item(s) bought on %2$s.', 'wc-hubtel-payment-gateway' ), count( $order_items ), get_bloginfo('name') )
+			),
+			'store' => $store,
 		);
 
 		// Add Order Items
