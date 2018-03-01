@@ -255,7 +255,7 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 				'label'       => __( 'Enable logging', 'wc-hubtel-payment-gateway' ),
 				'default'     => 'no',
 				/* translators: %s: URL */
-				'description' => sprintf( __( 'Log Hubtel events, such as payment requests, inside %s', 'wc-hubtel-payment-gateway' ), '<code>' . WC_Log_Handler_File::get_log_file_path( 'hubtel' ) . '</code>' ),
+				'description' => sprintf( __( 'Log Hubtel events, such as invoice requests, inside %s', 'wc-hubtel-payment-gateway' ), '<code>' . WC_Log_Handler_File::get_log_file_path( 'woocommerce-gateway-hubtel' ) . '</code>' ),
 			),
 			'store_details' => array(
 				'title'       => __( 'Store Details', 'wc-hubtel-payment-gateway' ),
