@@ -10,7 +10,7 @@
 * Hubtel Merchant account is required.
 
 > To accept payments using the **Hubtel Checkout for WooCommerce** gateway, you must have a valid Hubtel merchant account.
-> Link the gateway with your Hubtel merchant account by configuring the gateway settings at **WooCommerce > Settings > Checkout > Hubtel Checkout **.
+> Link the gateway with your Hubtel merchant account by configuring the gateway settings at **WooCommerce > Settings > Checkout > Hubtel Checkout**.
 
 [View Documentation](https://github.com/seb86/woocommerce-hubtel-payment-gateway/wiki) on how to setup.
 
