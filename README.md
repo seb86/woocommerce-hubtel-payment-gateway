@@ -16,9 +16,9 @@
 
 ### A fast, easy payment experience
 
-Hubtel Checkout for WooCommerce allows your customers to skip the WooCommerce checkout and use Hubtel instead by providing a PCI compliant payment processing integration between WooCommerce and Hubtel. When customers select to pay with Hubtel during checkout, they are redirected to Hubtel to complete the payment using their Credit Card or via Mobile payment. It’s a quick-and-easy payment solution that can help increase sales.
+Hubtel Checkout for WooCommerce allows your customers to skip the WooCommerce checkout and use Hubtel instead by providing a PCI compliant payment processing integration between WooCommerce and Hubtel. When customers select to pay with Hubtel during checkout, they are redirected to Hubtel to complete the payment using their Credit Card or via Mobile payment. Once payment is complete the customer is redirected back to WooCommerce with their order.
 
-Once payment is complete the customer is redirected back to WooCommerce with their order.
+It’s a quick-and-easy payment solution that can help increase sales.
 
 ### Why use Hubtel Checkout for WooCommerce?
 
