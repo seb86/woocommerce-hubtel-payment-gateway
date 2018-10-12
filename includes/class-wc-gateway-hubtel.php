@@ -6,7 +6,7 @@
  *
  * @class   WC_Gateway_Hubtel
  * @extends WC_Payment_Gateway
- * @version 1.0.0
+ * @version 2.0.0
  * @package WooCommerce Hubtel Payment Gateway/Classes/Payment
  * @author  Sébastien Dumont
  */
@@ -135,6 +135,7 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 				include_once( 'class-wc-gateway-hubtel-api-handler.php' );
 				$this->hubtel_handler = new WC_Gateway_Hubtel_API_Handler( $this->client_id, $this->client_secret );
 			} else if ( empty( $this->client_id ) && empty( $this->client_secret ) ) {
+				$this->enabled = 'no';
 				self::log( __( 'Hubtel requires API credentials to be set.', 'wc-hubtel-payment-gateway' ) );
 			}
 		}
@@ -196,7 +197,7 @@ class WC_Gateway_Hubtel extends WC_Payment_Gateway {
 	} // END get_icon()
 
 	/**
-	 * Check if this gateway is enabled and available in the user's country.
+	 * Check if this gateway is available in the seller's country.
 	 *
 	 * @access public
 	 * @return bool

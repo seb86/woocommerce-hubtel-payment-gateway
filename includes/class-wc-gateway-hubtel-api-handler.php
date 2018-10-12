@@ -32,7 +32,7 @@ class WC_Gateway_Hubtel_API_Handler {
 	 * @access protected
 	 * @var string Invoice Create - API URL
 	 */
-	public static $api_url = 'https://api.hubtel.com/v1/merchantaccount/onlinecheckout/invoice/create';
+	public static $api_url = 'https://api.hubtel.com/v2/pos/onlinecheckout/items/initiate';
 
 	/**
 	 * @access protected

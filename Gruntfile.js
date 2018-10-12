@@ -21,7 +21,6 @@ module.exports = function(grunt) {
 						'language': 'en_US'
 					},
 					exclude: [
-						'woo-dependencies/.*',
 						'node_modules'
 					]
 				}
