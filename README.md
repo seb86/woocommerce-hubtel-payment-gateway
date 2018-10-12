@@ -1,5 +1,7 @@
 # Hubtel Checkout Payment Gateway for WooCommerce
 
+> This payment gateway may no longer work due to Hubtel changing their API.
+
 ![Hubtel](https://cldup.com/4LqRHM-Djg.png)
 
 ## Information and Requirements
